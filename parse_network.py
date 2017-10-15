@@ -44,15 +44,15 @@ class ChargerNetwork(object):
         self.supercharger_network = pd.DataFrame(charger_network)
         self.supercharger_network = self.supercharger_network.set_index('city')
 
-def find_distance(start_latlong, end_latlong):
+def calculate_distance(start_latlong, end_latlong):
     """
     Function for finding the distance between two supercharger sites
     """
     earth_radius_m = 6356.752
-    end_lat = math.radians(end_latlong[0])
-    start_lat =  math.radians(start_latlong[0])
-    end_long = math.radians(end_latlong[1])
-    start_long = math.radians(start_latlong[1])
+    start_lat, start_long, end_lat, end_long = map(math.radians,[start_latlong[0],
+                                                                start_latlong[1],
+                                                                end_latlong[0],
+                                                                end_latlong[1]])
     lat_delta_rad = (end_lat - start_lat)
     long_delta_rad = (end_long - start_long)
     chord = math.sin(lat_delta_rad/2)**2 + math.cos(start_lat) *\

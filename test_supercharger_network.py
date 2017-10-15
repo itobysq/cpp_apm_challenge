@@ -17,11 +17,14 @@ class TestFileParser(unittest.TestCase):
     def test_distance_calculator(self):
         self.network.parse_file()
         scn = self.network.supercharger_network
-        dist = pn.find_distance((scn.loc['Albany_NY']['lat'],
+        dist = pn.calculate_distance((scn.loc['Albany_NY']['lat'],
                           scn.loc['Albany_NY']['long']),
                           (scn.loc['West_Lebanon_NH']['lat'],
                            scn.loc['West_Lebanon_NH']['long']))
         self.assertTrue(round(dist) == 158)
+
+    def test_distance_table(self):
+        raise NotImplementedError
 
 if __name__ == "__main__":
     unittest.main()
