@@ -2,8 +2,8 @@
 Module for importing .cpp files and converting them into distances
 """
 import pandas as pd
-import CppHeaderParser
 import time
+import math
 
 class ChargerNetwork(object):
     """
@@ -21,19 +21,18 @@ class ChargerNetwork(object):
         charger_network = []
         with open(self.fn, mode='r') as f:
             for line in f:
-                line = f.readline()
                 if '{' in line:
                     line = line.rstrip(",\n")
                     line = line.replace('{', '').replace("'",'').replace('"','')\
                                                 .replace('}','').split(',')
                     line = [x.strip() for x in line]
                     position_counter = 0
-                    charger_info={'location': None, 'lat': None, 'long': None,
+                    charger_info={'city': None, 'lat': None, 'long': None,
                             'charge_rate_kmph': None}
                     for info in line:
                         position_counter += 1
                         if position_counter == 1:
-                            charger_info['location'] = info
+                            charger_info['city'] = info
                         elif position_counter == 2:
                             charger_info['lat'] = float(info)
                         elif position_counter == 3:
@@ -43,5 +42,21 @@ class ChargerNetwork(object):
                             position_counter = 0
                             charger_network.append(charger_info.copy())
         self.supercharger_network = pd.DataFrame(charger_network)
+        self.supercharger_network = self.supercharger_network.set_index('city')
 
-
+def find_distance(start_latlong, end_latlong):
+    """
+    Function for finding the distance between two supercharger sites
+    """
+    earth_radius_m = 6356.752
+    end_lat = math.radians(end_latlong[0])
+    start_lat =  math.radians(start_latlong[0])
+    end_long = math.radians(end_latlong[1])
+    start_long = math.radians(start_latlong[1])
+    lat_delta_rad = (end_lat - start_lat)
+    long_delta_rad = (end_long - start_long)
+    chord = math.sin(lat_delta_rad/2)**2 + math.cos(start_lat) *\
+            math.cos(end_lat) * math.sin(long_delta_rad/2)**2
+    angular_dist = 2 * math.atan2(math.sqrt(chord), math.sqrt(1-chord))
+    distance = earth_radius_m * angular_dist
+    return distance
