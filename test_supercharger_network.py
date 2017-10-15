@@ -24,7 +24,10 @@ class TestFileParser(unittest.TestCase):
         self.assertTrue(round(dist) == 158)
 
     def test_distance_table(self):
-        raise NotImplementedError
+        self.network.parse_file()
+        distance_table = self.network.build_distance_table()
+        dist = distance_table.loc['Albany_NY', 'West_Lebanon_NH']
+        self.assertTrue(round(dist) == 158)
 
 if __name__ == "__main__":
     unittest.main()
