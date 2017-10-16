@@ -58,18 +58,38 @@ def construct_graph():
     network.parse_file()
     scn = network.supercharger_network
     charger_graph = Graph()
-    for src in scn:
+    for src in scn.keys():
+        src = scn[src]
         charger_graph.add_node(src['city'])
-        for dest in scn:
+        for dest in scn.keys():
+            dest = scn[dest]
             if (src['city'], dest['city']) in charger_graph.distances:
                 pass
             else:
-                charger_graph.add_edge(src['city'],
-                                       dest['city'],
-                                       pn.calculate_distance((src['lat'],
-                                                              src['long']),
-                                                             (dest['lat'],
-                                                              dest['long']))
-                                       )
+                distance = pn.calculate_distance((src['lat'], src['long']),
+                                                 (dest['lat'], dest['long']))
+                if (distance < 320) & (distance > 0):
+                    charger_graph.add_edge(src['city'], dest['city'],
+                                           distance)
     return charger_graph
 
+def parse_output(path, source, dest):
+    path_instructions = [dest]
+    backtrace_node = dest
+    while backtrace_node != source:
+        path_instructions.append(path[backtrace_node])
+        backtrace_node = path[backtrace_node]
+    return path_instructions[::-1]
+
+
+def main():
+    source = 'Albany_NY'
+    dest = 'Truckee_CA'
+    charger_graph = construct_graph()
+    visited, tesla_path = dijsktra(charger_graph, source, dest)
+    instructions = parse_output(tesla_path, source, dest)
+    import ipdb; ipdb.set_trace() # BREAKPOINT
+    print('win')
+
+if __name__ == "__main__":
+    main()

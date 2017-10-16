@@ -3,6 +3,7 @@ Module for importing .cpp files and converting them into distances
 """
 import time
 import math
+from collections import defaultdict
 
 class ChargerNetwork(object):
     """
@@ -17,7 +18,7 @@ class ChargerNetwork(object):
         self.distance_table = None
 
     def parse_file(self):
-        charger_network = []
+        charger_network = defaultdict(dict)
         with open(self.fn, mode='r') as f:
             for line in f:
                 if '{' in line:
@@ -39,7 +40,7 @@ class ChargerNetwork(object):
                         elif position_counter == 4:
                             charger_info['charge_rate_kmph'] = float(info)
                             position_counter = 0
-                            charger_network.append(charger_info.copy())
+                            charger_network[charger_info['city']] = charger_info.copy()
         self.supercharger_network = charger_network
 
 def calculate_distance(start_latlong, end_latlong):
