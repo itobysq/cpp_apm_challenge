@@ -1,4 +1,5 @@
 from collections import defaultdict
+import charge_calculations as cc
 import parse_network as pn
 
 
@@ -71,7 +72,7 @@ def construct_graph():
                 if (distance < 320) & (distance > 0):
                     charger_graph.add_edge(src['city'], dest['city'],
                                            distance)
-    return charger_graph
+    return charger_graph, scn
 
 def parse_output(path, source, dest):
     path_instructions = [dest]
@@ -85,11 +86,12 @@ def parse_output(path, source, dest):
 def main():
     source = 'Albany_NY'
     dest = 'Truckee_CA'
-    charger_graph = construct_graph()
+    charger_graph, supercharger_table = construct_graph()
     visited, tesla_path = dijsktra(charger_graph, source, dest)
     instructions = parse_output(tesla_path, source, dest)
-    import ipdb; ipdb.set_trace() # BREAKPOINT
-    print('win')
+    planner = cc.ChargerPlan(supercharger_table, instructions)
+    plan = planner.calculate_time_at_supercharger()
+    print(plan)
 
 if __name__ == "__main__":
     main()
