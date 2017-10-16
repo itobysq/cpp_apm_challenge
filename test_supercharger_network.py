@@ -29,5 +29,10 @@ class TestFileParser(unittest.TestCase):
         dist = distance_table.loc['Albany_NY', 'West_Lebanon_NH']
         self.assertTrue(round(dist) == 158)
 
+    def test_build_charger_network_info(self):
+        self.network.build_charger_network_tables()
+        self.assertTrue((self.network.supercharger_network is not None) &
+                         (self.network.distance_table is not None))
+
 if __name__ == "__main__":
     unittest.main()

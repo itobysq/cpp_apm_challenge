@@ -1,7 +1,6 @@
 """
 Module for importing .cpp files and converting them into distances
 """
-import pandas as pd
 import time
 import math
 
@@ -41,37 +40,7 @@ class ChargerNetwork(object):
                             charger_info['charge_rate_kmph'] = float(info)
                             position_counter = 0
                             charger_network.append(charger_info.copy())
-        self.supercharger_network = pd.DataFrame(charger_network)
-        self.supercharger_network = self.supercharger_network.set_index('city')
-
-    def build_distance_table(self):
-        """
-        Converts a supercharger network to a table where the index is the
-        source city and the columns are the destination cities.
-        """
-        if self.distance_table is not None:
-            return 0
-        scn = self.supercharger_network
-        distances = pd.DataFrame(index=scn.index, columns=scn.index)
-        for src in scn.index:
-            for dest in scn.index:
-                if not math.isnan(distances.loc[dest, src]):
-                    distances.set_value(src, dest, distances.get_value(dest, src))
-                    continue
-                elif src == dest:
-                    distances.set_value(src, dest, 0)
-                else:
-                    distances.set_value(src,
-                                        dest,
-                                        calculate_distance(
-                                                           (scn.loc[src]['lat'],
-                                                            scn.loc[src]['long']),
-                                                           (scn.loc[dest]['lat'],
-                                                            scn.loc[dest]['long'])
-                                                           )
-                                        )
-        self.distance_table = distances
-        return self.distance_table
+        self.supercharger_network = charger_network
 
 def calculate_distance(start_latlong, end_latlong):
     """
