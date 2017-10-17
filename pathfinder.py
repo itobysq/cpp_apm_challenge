@@ -1,7 +1,7 @@
 from collections import defaultdict
 import charge_calculations as cc
 import parse_network as pn
-
+import sys
 
 class Graph:
   def __init__(self):
@@ -83,9 +83,7 @@ def parse_output(path, source, dest):
     return path_instructions[::-1]
 
 
-def main():
-    source = 'Albany_NY'
-    dest = 'Truckee_CA'
+def main(source, dest):
     charger_graph, supercharger_table = construct_graph()
     visited, tesla_path = dijsktra(charger_graph, source, dest)
     instructions = parse_output(tesla_path, source, dest)

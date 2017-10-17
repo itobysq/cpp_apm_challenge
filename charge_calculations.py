@@ -19,7 +19,6 @@ class ChargerPlan(object):
     def drive_ok(self, drive_stops):
         for idx, stop in enumerate(drive_stops):
             if idx == self.nstops - 2:
-                import ipdb; ipdb.set_trace() # BREAKPOINT
                 if stop['km_on_arrival'] > stop['km_to_next_stop']:
                     return True
                 else:
@@ -91,7 +90,6 @@ class ChargerPlan(object):
             charger_to_add = top_chargers.pop()
             drive_snapshots[charger_to_add['index']]['charge_here'] = True
 
-        import ipdb; ipdb.set_trace() # BREAKPOINT
         output_string = self.build_output_string(drive_snapshots)
         return output_string
 
